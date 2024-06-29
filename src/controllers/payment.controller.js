@@ -31,7 +31,6 @@ export const paymentVerification = async (req, res) => {
 
   if (isAuthentic) {
     // Database comes here
-
     await Payment.create({
       razorpay_order_id,
       razorpay_payment_id,
