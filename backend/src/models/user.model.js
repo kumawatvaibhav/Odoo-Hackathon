@@ -1,11 +1,9 @@
 const mongoose = require("mongoose")
-const projectModel = require("./project.model")
  
 
 const userSchema = new mongoose.Schema({
-    id:{
+    role:{
         type: String,
-        required: true,
     },
     username:{
         type:String,
