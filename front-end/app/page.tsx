@@ -3,22 +3,101 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Image from 'next/image';
-import backgroundImage from '@/public/retro-living-room-interior-design.jpg'; // Ensure the image is in the public folder
+import backgroundImage from '@/public/retro-living-room-interior-design.jpg'; 
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Handle successful login, e.g., save token, redirect, etc.
+        console.log('Login successful:', data);
+      } else {
+        setErrorMessage(data.message || 'Login failed');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred during login');
+    }
+  };
+
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      setErrorMessage('Passwords do not match');
+      return;
+    }
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // Handle successful registration, e.g., redirect to login, etc.
+        console.log('Registration successful:', data);
+      } else {
+        setErrorMessage(data.message || 'Registration failed');
+      }
+    } catch (error) {
+      setErrorMessage('An error occurred during registration');
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isLogin) {
+      handleLogin();
+    } else {
+      handleRegister();
+    }
+  };
 
   return (
     <Container>
       <ImageWrapper>
         <StyledImage src={backgroundImage} alt="Background Image" layout="fill" objectFit="cover" />
       </ImageWrapper>
+      <Header>
+        <BrandName>Furniture-Rent</BrandName>
+      </Header>
       <FormWrapper>
-        <Form>
+        <Form onSubmit={handleSubmit}>
           <Title>{isLogin ? 'Login Now!' : 'Register!'}</Title>
-          <Input placeholder="Username/Email" />
-          <Input type="password" placeholder="Enter Password" />
-          {!isLogin && <Input type="password" placeholder="Confirm Password" />}
+          {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
+          <Input 
+            placeholder="Username/Email" 
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <Input 
+            type="password" 
+            placeholder="Enter Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {!isLogin && (
+            <Input 
+              type="password" 
+              placeholder="Confirm Password" 
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          )}
           <Options>
             <RememberMe>
               <input type="checkbox" />
@@ -26,7 +105,7 @@ const Auth = () => {
             </RememberMe>
             {isLogin && <ForgotPassword>Forgot password?</ForgotPassword>}
           </Options>
-          <Button>{isLogin ? 'Login' : 'Register'}</Button>
+          <Button type="submit">{isLogin ? 'Login' : 'Register'}</Button>
           <ToggleText>
             {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
             <ToggleLink onClick={() => setIsLogin(!isLogin)}>
@@ -54,6 +133,21 @@ const ImageWrapper = styled.div`
   z-index: -1;
 `;
 
+const Header = styled.header`
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1;
+`;
+
+const BrandName = styled.h1`
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
 const StyledImage = styled(Image)`
   object-fit: cover;
   width: 100%;
@@ -69,7 +163,7 @@ const FormWrapper = styled.div`
   background: transparent;
 `;
 
-const Form = styled.div`
+const Form = styled.form`
   background: transparent;
   padding: 2rem;
   border-radius: 8px;
@@ -82,6 +176,11 @@ const Title = styled.h4`
   font-size: 2rem;
   margin-bottom: 1.5rem;
   color: white;
+`;
+
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.9rem;
 `;
 
 const Input = styled.input`
