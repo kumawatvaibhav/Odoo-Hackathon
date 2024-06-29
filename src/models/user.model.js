@@ -5,10 +5,13 @@ const projectModel = require("./project.model")
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true, 
+        index: true
     },
     lastName: {
         type: String,
+        required:true,
     },
     email:{
         type:String,
@@ -17,7 +20,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: [true, 'Password is required']
     },
     FurnitureRentedIds:{
         type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Projects' }]
@@ -26,5 +29,5 @@ const userSchema = new mongoose.Schema({
         timestamps : true
     });
 
-const userModel = mongoose.model("Users",userSchema);
-module.exports = userModel;
+export const User=mongoose.model("User",userSchema)
+
