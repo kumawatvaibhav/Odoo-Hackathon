@@ -1,36 +1,30 @@
-const mongoose = require("mongoose");
-//Defining Schema for Furniture in the inventory
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const furnitureSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    price_per_day: {
-        type: Number,
-        required: true
-    },
-    image: {
-        type: String,
-        required: true
-    },
-    location: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-    },
-    furnitureRentedIds: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User' 
-        }
-    ]
-}, {
-    timestamps: true
+const furnitureSchema = new Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  category_id: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'Category' 
+  },
+  price_per_day: {
+    type: Number,
+    required: true,
+  },
+  image: {
+    type: String,
+  },
+  availability_status: Boolean,
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
 });
 
-const furnitureModel = mongoose.model("Furniture", furnitureSchema);
-module.exports = furnitureModel;
+const Furniture = mongoose.model('Furniture', furnitureSchema);
+
+module.exports = Furniture;
