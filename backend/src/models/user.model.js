@@ -3,6 +3,15 @@ const projectModel = require("./project.model")
  
 
 const userSchema = new mongoose.Schema({
+    id:{
+        type: String,
+        required: true,
+    },
+    username:{
+        type:String,
+        required:true,
+        unique:true
+    },
     firstName: {
         type: String,
         required: true
@@ -19,8 +28,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phone_number:{
+        type: Int16Array,
+    },
     FurnitureRentedIds:{
-        type:[{ type: mongoose.Schema.Types.ObjectId, ref: 'Projects' }]
+        type: SVGAnimatedInteger,
     },
     },{
         timestamps : true
