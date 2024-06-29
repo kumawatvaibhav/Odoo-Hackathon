@@ -1,12 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const furnitureHandler = require("../controllers/furniture.controller"); 
-const { verifyToken } = require("../middleware/middleware.authMiddleware");
+import {Router} from "express"
+import Furniture from "../controllers/furniture.controller.js"
+import { verifyJWT } from "../middleware/middleware.authMiddleware.js";
+
+const router =Router();
 
 //post = create
 
-router.get("/furniture/:furnitureID?",furnitureHandler.getFurniture);
-router.patch("/furniture/:furnitureID",[verifyToken],furniture.updateFurniture);
-router.delete("/furniture/:furnitureID",[verifyToken],furnitureHandler.deleteFurniture);
+router.get("/furniture/:furnitureID?",Furniture.getFurniture);
+router.patch("/furniture/:furnitureID",[verifyJWT],Furniture.updateFurniture);
 
-module.exports = router;
+
+export default router

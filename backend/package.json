@@ -1,22 +1,27 @@
 {
-  "name": "Odoo-Hackathon",
+  "name": "odoo",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "serve": "nodemon ."
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
   },
-  "author": "Vaibhav Kumawat",
+  "author": "Arnav shah",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.8.0",
     "mongoose": "^8.4.4",
-    "nodemon": "^3.1.4"
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^3.1.4",
+    "razorpay": "^2.9.4"
   }
 }

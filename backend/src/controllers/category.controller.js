@@ -1,45 +1,60 @@
-const categoriesModel = require("../models/categories.model");
-const furnitureModel = require("../models/furniture.model");
+import Category from "../models/category.model.js";
+import Furniture from "../models/furniture.model.js";
 
-//To create a category
-//only for admin mode 
-const createCategory = async (req,res) => {
-    const payload = req.body;
-    const dbResp = await categoriesModel.create(payload);
-    res.send(dbResp);
-}
-
-// to fetch furniture from a category 
-const getCategory = async (req,res) => {
-    const furniture = await categoriesModel.find();
-    res.send(furniture)
-} 
-
-// to update a category
-const updateCategory = async (req, res) => {
-    const newPayload = req.body;
-    const newDbResp = await categoriesModel.updateOne({
-        _id : req.params.categoryId
-    }, newPayload);
-    res.send(newDbResp);
-}
-
-const deleteCategory = async (req, res) => {
-    const categoryId = req.params.categoryId;
-    const isCategoryInUse = await projectModel.findOne({
-        categoryIds: {
-            $in : categoryId
-        }
-    });
-    if(isCategoryInUse) {
-        return res.status(409).send({
-            "result" : "Category Already in Use"
-        })
+// To create a category
+// Only for admin mode
+export const createCategory = async (req, res) => {
+    try {
+        const payload = req.body;
+        const dbResp = await Category.create(payload);
+        res.send(dbResp);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
     }
-    const newDbResp = await categoriesModel.deleteOne({
-        _id : categoryId
-    });
-    res.send(newDbResp);
 }
 
-module.exports = {createCategory,getCategory,updateCategory,deleteCategory};
+// To fetch furniture from a category
+export const getCategory = async (req, res) => {
+    try {
+        const furniture = await Category.find();
+        res.send(furniture);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+}
+
+// To update a category
+export const updateCategory = async (req, res) => {
+    try {
+        const newPayload = req.body;
+        const newDbResp = await Category.updateOne({
+            _id: req.params.categoryId
+        }, newPayload);
+        res.send(newDbResp);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+}
+
+// To delete a category
+export const deleteCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.categoryId;
+        const isCategoryInUse = await Furniture.findOne({
+            categoryIds: {
+                $in: categoryId
+            }
+        });
+        if (isCategoryInUse) {
+            return res.status(409).send({
+                result: "Category Already in Use"
+            });
+        }
+        const newDbResp = await Category.deleteOne({
+            _id: categoryId
+        });
+        res.send(newDbResp);
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+}

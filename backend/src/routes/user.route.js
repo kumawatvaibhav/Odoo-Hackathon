@@ -1,14 +1,20 @@
-const express = require("express");
-const router = express.Router();
-const userHandler = require("../controllers/user.controller"); 
-const { verifyToken } = require("../middleware/middleware.authMiddleware");
+import { changeCurrentPassword, getCurrentUser, loginUser, logoutUser, refreshAccessToken, registerUser, updateAccount } from "../controllers/user.controller.js";
+import { Router } from "express";
+import { verifyJWT } from "../middleware/middleware.authMiddleware.js";
 
-//post = create
-router.post("/register",userHandler.register); 
-router.post("/login",userHandler.login);
-router.get("/users/:userId?",userHandler.getUser);
-router.patch("/users/:userId",[verifyToken],userHandler.updateUser);
-router.get("/users/",userHandler.CountUser);
-// router.delete("/user/:projectId",projectHandlers.deleteProject);
+const router=Router();
 
-module.exports = router;
+router.route("/register").post(registerUser)
+
+    router.route("/login").post(loginUser)
+
+
+    //secured routes
+    router.route("/logout").post(verifyJWT,logoutUser)
+    router.route("/refresh-token").post(refreshAccessToken)
+    router.route("/change-password").post(verifyJWT,changeCurrentPassword)
+    router.route("/current-user").get(verifyJWT,getCurrentUser)
+    router.route("update-account").patch(verifyJWT,updateAccount)
+
+    
+export default router
