@@ -6,4 +6,5 @@ const router=Router();
 router.route("/payment").post(PaymentUser)
 router.route("/paymentverification").post(paymentVerification)
 
+
 export default router;

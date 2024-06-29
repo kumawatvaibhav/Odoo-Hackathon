@@ -124,12 +124,7 @@ const loginUser = asyncHandler(async (req, res) =>{
 
 })
 
-import { apiError } from "../utils/apiError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { apiResponse } from "../utils/apiResponse.js";
-import { User } from "../models/user.model.js";
-
-export const logoutUser = asyncHandler(async (req, res) => {
+ const logoutUser = asyncHandler(async (req, res) => {
   try {
     // Find and update the user, unsetting the refreshToken
     const user = await User.findByIdAndUpdate(

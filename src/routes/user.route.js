@@ -1,6 +1,7 @@
 import { changeCurrentPassword, getCurrentUser, loginUser, logoutUser, refreshAccessToken, registerUser, updateAccount } from "../controllers/user.controller.js";
 import { Router } from "express";
 import { verifyJWT } from "../middleware/middleware.authMiddleware.js";
+
 const router=Router();
 
 router.route("/register").post(registerUser)
