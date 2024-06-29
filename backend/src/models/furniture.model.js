@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import mongoose from "mongoose"
 
-const furnitureSchema = new Schema({
+const furnitureSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -19,12 +18,13 @@ const furnitureSchema = new Schema({
   },
   image: {
     type: String,
+
   },
-  availability_status: Boolean,
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
+},{
+    timestamps:true,
+
 });
 
 const Furniture = mongoose.model('Furniture', furnitureSchema);
+export default Furniture;
 
-module.exports = Furniture;

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose"
+
 const Schema = mongoose.Schema;
 
 const bookingSchema = new Schema({
@@ -14,10 +15,12 @@ const bookingSchema = new Schema({
   end_date: Date,
   total_price: Number,
   status: String,
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
+
+},{
+    timestamps:true,
+
 });
 
-const Booking = mongoose.model('Booking', bookingSchema);
+export const Booking = mongoose.model('Booking', bookingSchema);
 
-module.exports = Booking;
+

@@ -3,31 +3,65 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Define custom color variables */
+  --foreground-rgb: 51, 51, 51; /* Dark foreground color */
+  
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    /* --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0; */
   }
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
+  /* background: linear-gradient(
       to bottom,
       transparent,
       rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    ) */
+  background: url('C:/Users/DELL/OneDrive/Desktop/FRONNNNNT/oddoo_hack_part/my-app/src/components/Assets/contemporary-living-room-interior-design-with-luxury-armchair.jpg')
+    /* rgb(var(--background-start-rgb)); */
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+
+  .text-gradient {
+    background: linear-gradient(to right, #6e3bc2, #de598c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .animate-grow-rise {
+    animation: growAndRise 4s ease-in-out infinite;
+  }
+
+  @keyframes slowPulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: .5;
+    }
+  }
+  
+  .animate-slow-pulse {
+    animation: slowPulse 4s ease-in-out infinite;
+  }
+
+  /* Add this to your global CSS file */
+.scroll-container {
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-item {
+  scroll-snap-align: start;
 }
