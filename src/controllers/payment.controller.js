@@ -25,8 +25,9 @@ export const paymentVerification = async (req, res) => {
     .createHmac("sha256", process.env.RAZORPAY_API_SECRET)
     .update(body.toString())
     .digest("hex");
-
+   console.log(expectedSignature)
   const isAuthentic = expectedSignature === razorpay_signature;
+  console.log(isAuthentic)
 
   if (isAuthentic) {
     // Database comes here
@@ -38,7 +39,7 @@ export const paymentVerification = async (req, res) => {
     });
 
     res.redirect(
-      `http://localhost:8000/paymentsuccess?reference=${razorpay_payment_id}`
+      `http://localhost:8000/payment?reference=${razorpay_payment_id}`
     );
   } else {
     res.status(400).json({

@@ -26,6 +26,7 @@ import paymentRoutes from "./routes/paymentRouter.route.js"
 
 app.use("/api/v1/users",userRouter)
 app.use("/api",paymentRoutes)
+app.get("/api/getkeys",(req,res)=>res.status(200).json({key:process.env.RAZORPAY_API_KEY}))
 export {app}
 
 
