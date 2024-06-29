@@ -3,24 +3,22 @@ import { User } from "../models/user.model.js";
 import { apiError } from "../utils/apiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
+import jwt from "jsonwebtoken"
 
-
-const generateAccessAndRefereshTokens = async(userId) =>{
+const generateAccessAndRefereshTokens = async (userId) => {
     try {
-        const user = await User.findById(userId)
-        const accessToken = user.generateAccessToken()
-        const refreshToken = user.generateRefreshToken()
+        const accessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
+        const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRY });
 
-        user.refreshToken = refreshToken
-        await user.save({ validateBeforeSave: false })
+        console.log("Generated AccessToken:", accessToken);
+        console.log("Generated RefreshToken:", refreshToken);
 
-        return {accessToken, refreshToken}
-
-
+        return { accessToken, refreshToken };
     } catch (error) {
-        throw new apiErrorpiError(500, "Something went wrong while generating referesh and access token")
+        console.error("Error generating tokens:", error);
+        return { accessToken: null, refreshToken: null };
     }
-}
+};
 
 const registerUser=asyncHandler(async(req,res)=>{
        //get user details from frontend
@@ -107,7 +105,7 @@ const loginUser = asyncHandler(async (req, res) =>{
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure:true,
     }
 
     return res
@@ -126,33 +124,46 @@ const loginUser = asyncHandler(async (req, res) =>{
 
 })
 
+import { apiError } from "../utils/apiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { apiResponse } from "../utils/apiResponse.js";
+import { User } from "../models/user.model.js";
 
-const logoutUser=asyncHandler(async(req,res)=>{
-        User.findByIdAndUpdate(
-           req.user._id,
-           {
-             $unset:{  //update 
-                refreshToken:1
-             }
-           } ,
+export const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    // Find and update the user, unsetting the refreshToken
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $unset: { refreshToken: 1 }
+      },
+      {
+        new: true
+      }
+    );
 
-           {
-            new:true,
-           }
-        )
+    // If the user does not exist, throw an error
+    if (!user) {
+      throw new apiError(401, "User not found");
+    }
 
-        
-     const options={
-        httpOnly:true,
-        secure:true,
+    // Clear the cookies
+    const options = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None'
+    };
 
-     }
-     return res.status(200)
-     .clearCookie("accessToken",options)
-     .clearCookie("refreshtoken",options)
-     .json(new apiResponse(200,{},"User Logged out "))
-
-})
+    return res.status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json(new apiResponse(200, {}, "User logged out successfully"));
+  } catch (error) {
+    // Handle any errors that occur
+    console.error('Logout Error:', error.message);
+    throw new apiError(500, error.message || "Internal Server Error");
+  }
+});
 
 const refreshAccessToken=asyncHandler(async(req,res)=>{
    const incomingRefreshToken=await req.cookies.refreshToken || req.body.refreshToken
@@ -191,7 +202,6 @@ const refreshAccessToken=asyncHandler(async(req,res)=>{
          {accessToken,refreshToken:newRefreshToken},
          "Access token refreshed"
          
-  
       )
     )
   } catch (error) {
@@ -230,8 +240,8 @@ const getCurrentUser=asyncHandler(async(req,res)=>{
 })
 
 const updateAccount=asyncHandler(async(req,res)=>{
-     const {fullName,email}=req.body
-     if(!fullName || !email)
+     const {firstName,lastName,email}=req.body
+     if(!firstName || !email || !lastName)
         {
             throw new apiError(400,"All fields are required")
         }
