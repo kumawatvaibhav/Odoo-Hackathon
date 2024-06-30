@@ -9,7 +9,7 @@ const furnitureSchema = new mongoose.Schema({
     type: String,
   },
   category_id: { 
-    type: Schema.Types.ObjectId, 
+    type: mongoose.Schema.Types.ObjectId, 
     ref: 'Category' 
   },
   price_per_day: {
@@ -25,6 +25,6 @@ const furnitureSchema = new mongoose.Schema({
 
 });
 
-const Furniture = mongoose.model('Furniture', furnitureSchema);
-export default Furniture;
+export const Furniture = mongoose.model('Furniture', furnitureSchema);
+
 

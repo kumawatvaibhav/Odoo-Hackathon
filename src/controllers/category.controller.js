@@ -1,5 +1,5 @@
-import Category from "../models/category.model.js";
-import Furniture from "../models/furniture.model.js";
+import { Category }from "../models/category.model.js";
+
 
 // To create a category
 // Only for admin mode
@@ -40,7 +40,7 @@ export const updateCategory = async (req, res) => {
 export const deleteCategory = async (req, res) => {
     try {
         const categoryId = req.params.categoryId;
-        const isCategoryInUse = await Furniture.findOne({
+        const isCategoryInUse = await furnitureModel.findOne({
             categoryIds: {
                 $in: categoryId
             }

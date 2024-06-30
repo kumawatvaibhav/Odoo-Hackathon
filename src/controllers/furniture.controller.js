@@ -1,26 +1,55 @@
-import Furniture from "../models/furniture.model.js"
+import {Furniture} from '../models/furniture.model.js';
 
-//method to get furniture details : 
-const getFurniture = async (req,res) => {
-    const filter = req.params.userId ? {
-        _id : req.params.userId
-    } : {};
-    const furniture = await Furniture.find(filter, {"id"  : 1,"name" : 1,
-    "price_per_day" : 1, "image":1,"location":1 ,"description" : 1,"furnitureRentedIds" : 1});
-    res.send(furniture);
-} 
+// Create a new furniture item
+export const createFurniture = async (req, res) => {
+    try {
+        const newFurniture = new Furniture(req.body);
+        await newFurniture.save();
+        res.status(201).json(newFurniture);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
-//method to update furniture info : 
+// Get all furniture items
+export const getAllFurniture = async (req, res) => {
+    try {
+        const furniture = await Furniture.find().populate('category_id');
+        res.status(200).json(furniture);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-const updateFurniture = async (req, res) => {
-    const newPayload = req.body;
-    const newDbResp = await Furniture.updateOne({
-        _id : req.params.furnitureId
-    }, newPayload);
-    res.send(newDbResp);
-}
+// Get furniture item by ID
+export const getFurnitureById = async (req, res) => {
+    try {
+        const furniture = await Furniture.findById(req.params.id).populate('category_id');
+        if (!furniture) return res.status(404).json({ message: 'Furniture not found' });
+        res.status(200).json(furniture);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-export{
-    getFurniture,
-    updateFurniture
-}
+// Update furniture item by ID
+export const updateFurniture = async (req, res) => {
+    try {
+        const updatedFurniture = await Furniture.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedFurniture) return res.status(404).json({ message: 'Furniture not found' });
+        res.status(200).json(updatedFurniture);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Delete furniture item by ID
+export const deleteFurniture = async (req, res) => {
+    try {
+        const deletedFurniture = await Furniture.findByIdAndDelete(req.params.id);
+        if (!deletedFurniture) return res.status(404).json({ message: 'Furniture not found' });
+        res.status(200).json({ message: 'Furniture deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

@@ -4,7 +4,7 @@ import { Payment } from "../models/payment.model.js";
 
 export const PaymentUser = async (req, res) => {
   const options = {
-    amount: Number(req.body.amount * 100),
+    amount: Number(req.body.amount),
     currency: "INR",
   };
   const order = await instance.orders.create(options);
@@ -18,7 +18,6 @@ export const PaymentUser = async (req, res) => {
 export const paymentVerification = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
-
   const body = razorpay_order_id + "|" + razorpay_payment_id;
 
   const expectedSignature = crypto
@@ -29,6 +28,7 @@ export const paymentVerification = async (req, res) => {
    const isAuthentic = expectedSignature === razorpay_signature;
    console.log(isAuthentic)
 
+   
   if (isAuthentic) {
     // Database comes here
     await Payment.create({
@@ -40,6 +40,7 @@ export const paymentVerification = async (req, res) => {
     res.redirect(
       `http://localhost:8000/payment?reference=${razorpay_payment_id}`
     );
+
   } else {
     res.status(400).json({
       success: false,
