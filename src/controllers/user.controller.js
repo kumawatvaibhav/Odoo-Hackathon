@@ -5,20 +5,22 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken"
 
-const generateAccessAndRefereshTokens = async (userId) => {
-    try {
-        const accessToken = jwt.sign({ id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: process.env.ACCESS_TOKEN_EXPIRY });
-        const refreshToken = jwt.sign({ id: userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: process.env.REFRESH_TOKEN_EXPIRY });
+const generateAccessAndRefereshTokens = async(userId) =>{
+  try {
+      const user = await User.findById(userId)
+      const accessToken = user.generateAccessToken()
+      const refreshToken = user.generateRefreshToken()
 
-        console.log("Generated AccessToken:", accessToken);
-        console.log("Generated RefreshToken:", refreshToken);
+      user.refreshToken = refreshToken
+      await user.save({ validateBeforeSave: false })
 
-        return { accessToken, refreshToken };
-    } catch (error) {
-        console.error("Error generating tokens:", error);
-        return { accessToken: null, refreshToken: null };
-    }
-};
+      return {accessToken, refreshToken}
+
+
+  } catch (error) {
+      throw new apiError(500, "Something went wrong while generating referesh and access token")
+  }
+}
 
 const registerUser=asyncHandler(async(req,res)=>{
        //get user details from frontend

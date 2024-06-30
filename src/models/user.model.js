@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
   }
   
   userSchema.methods.generateAccessToken=function(){
-      jwt.sign({
+      return jwt.sign({
           _id:this._id,
           email:this.email,
           firstName:this.firstName,
@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
   
   }
   userSchema.methods.generateRefreshToken=function(){
-      jwt.sign({
+      return jwt.sign({
           _id:this._id,
       },
       process.env.REFRESH_TOKEN_SECRET,
